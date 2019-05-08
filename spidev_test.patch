@@ -1,0 +1,45 @@
+--- spidev_test_original.c	2019-05-08 11:04:22.846813035 +0800
++++ spidev_test.c	2019-05-07 17:06:02.755505137 +0800
+@@ -32,7 +32,7 @@
+ 	abort();
+ }
+ 
+-static const char *device = "/dev/spidev1.1";
++static const char *device = "/dev/spidev0.0";
+ static uint32_t mode;
+ static uint8_t bits = 8;
+ static char *input_file;
+@@ -41,6 +41,7 @@
+ static uint16_t delay;
+ static int verbose;
+ 
++/*
+ uint8_t default_tx[] = {
+ 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 	0x40, 0x00, 0x00, 0x00, 0x00, 0x95,
+@@ -48,6 +49,10 @@
+ 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 	0xF0, 0x0D,
++};*/
++
++uint8_t default_tx[] = {
++        0x01,
+ };
+ 
+ uint8_t default_rx[ARRAY_SIZE(default_tx)] = {0, };
+@@ -392,8 +397,12 @@
+ 	else if (input_file)
+ 		transfer_file(fd, input_file);
+ 	else
+-		transfer(fd, default_tx, default_rx, sizeof(default_tx));
+-
++	{	
++                for (int i =0;i<16;i++){
++                    transfer(fd, default_tx, default_rx, sizeof(default_tx));
++                    default_tx[0] ++;
++                }
++        }
+ 	close(fd);
+ 
+ 	return ret;
