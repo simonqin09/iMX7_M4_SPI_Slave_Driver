@@ -1,0 +1,60 @@
+diff --git a/examples/imx7_colibri_m4/pin_mux.c b/examples/imx7_colibri_m4/pin_mux.c
+index 73dfaf0..7ed176e 100644
+--- a/examples/imx7_colibri_m4/pin_mux.c
++++ b/examples/imx7_colibri_m4/pin_mux.c
+
+@@ -220,6 +220,31 @@ void configure_ecspi_pins(ECSPI_Type* base)
+ 			IOMUXC_SW_PAD_CTL_PAD_I2C2_SDA_HYS_MASK;
+ }
+ 
++void configure_ecspi_slave_pins(ECSPI_Type* base)
++{
++        // ECSPI3 iomux configuration
++        /* daisy chain selection */
++        IOMUXC_ECSPI3_SCLK_SELECT_INPUT = 0;
++        IOMUXC_ECSPI3_MOSI_SELECT_INPUT = 0;
++        IOMUXC_ECSPI3_SS0_B_SELECT_INPUT = 0;
++
++        /* iomux */
++        IOMUXC_SW_MUX_CTL_PAD_I2C2_SCL = IOMUXC_SW_MUX_CTL_PAD_I2C2_SCL_MUX_MODE(3);    /* ECSPI SLK  */
++        IOMUXC_SW_MUX_CTL_PAD_I2C1_SDA = IOMUXC_SW_MUX_CTL_PAD_I2C1_SDA_MUX_MODE(3);    /* ECSPI MOSI */
++        IOMUXC_SW_MUX_CTL_PAD_I2C1_SCL = IOMUXC_SW_MUX_CTL_PAD_I2C1_SCL_MUX_MODE(3);    /* ECSPI MISO  */
++        IOMUXC_SW_MUX_CTL_PAD_I2C2_SDA  = IOMUXC_SW_MUX_CTL_PAD_I2C2_SDA_MUX_MODE(3);     /* ECSPI SS0 */
++
++        /* pad control */
++        IOMUXC_SW_PAD_CTL_PAD_I2C2_SCL = IOMUXC_SW_PAD_CTL_PAD_I2C2_SCL_HYS_MASK;
++
++        IOMUXC_SW_PAD_CTL_PAD_I2C1_SDA = IOMUXC_SW_PAD_CTL_PAD_I2C1_SDA_HYS_MASK;
++
++        IOMUXC_SW_PAD_CTL_PAD_I2C1_SCL = IOMUXC_SW_PAD_CTL_PAD_I2C1_SCL_DSE(0)    |
++                        IOMUXC_SW_PAD_CTL_PAD_I2C1_SCL_HYS_MASK;
++
++        IOMUXC_SW_PAD_CTL_PAD_I2C2_SDA  = IOMUXC_SW_PAD_CTL_PAD_I2C2_SDA_HYS_MASK;
++}
++
+ void configure_pwm_pins(PWM_Type* base)
+ {
+         // PWM2 iomux configuration
+
+diff --git a/examples/imx7_colibri_m4/pin_mux.h b/examples/imx7_colibri_m4/pin_mux.h
+index be0a59e..01a29a6 100644
+--- a/examples/imx7_colibri_m4/pin_mux.h
++++ b/examples/imx7_colibri_m4/pin_mux.h
+@@ -101,6 +101,17 @@ void configure_ecspi_pins(ECSPI_Type* base);
+ 
+ /*!
+ **     @brief
++**         ECSPI method sets registers according routing settings. Call
++**         this method code to route desired pins into:
++**         ECSPI1, ECSPI2, ECSPI3, ECSPI4
++**         peripherals.
++**     @param
++**         ECSPI_Type* base - ECSPI base address 1..4
++*/
++void configure_ecspi_slave_pins(ECSPI_Type* base);
++
++/*!
++**     @brief
+ **         PWM method sets registers according routing settings. Call
+ **         this method code to route desired pins into:
+ **         PWM1, PWM2, PWM3, PWM4
