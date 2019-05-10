@@ -85,13 +85,13 @@ int main(void)
         
         /* print out rx/tx data */
         PRINTF("\n\rSLAVE: Data transfer result: \n\r");
-        PRINTF("Rx data: ");
+        PRINTF("Rx data this time: ");
         for(i = 0; i < countData; i++)
         {
             PRINTF(" 0x%02X", rxBuffer[i]);
         }
 
-        PRINTF("\n\rTx data: ");
+        PRINTF("\n\rTx data next time: ");
         for(j = 0; j < countData; j++)
         {
             PRINTF(" 0x%02X", txBuffer[j]);
@@ -165,6 +165,7 @@ void BOARD_ECSPI_HANDLER(void)
         /* Read byte from rx data register */
         rxBuffer[countData] = ECSPI_ReceiveData(BOARD_ECSPI_BASEADDR);
         
+        txBuffer[countData] = rxBuffer[countData];
         /* Store tx data to tx data register for next transmition */
         ECSPI_SendData(BOARD_ECSPI_BASEADDR, txBuffer[countData]);
 
